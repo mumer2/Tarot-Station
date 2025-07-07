@@ -16,6 +16,8 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import i18n from '../utils/i18n';
+import { useContext } from 'react';
+import { ThemeContext } from '../context/ThemeContext';
 
 export default function ChatScreen() {
   const [messages, setMessages] = useState([]);
@@ -27,6 +29,9 @@ export default function ChatScreen() {
   const [isSessionActive, setIsSessionActive] = useState(true);
   const [walletBalance, setWalletBalance] = useState(0);
   const [sessionId, setSessionId] = useState("");
+
+  const { theme } = useContext(ThemeContext);
+const isDark = theme === 'dark';
 
   const generateSessionId = () => `session_${Date.now()}`;
 
@@ -212,8 +217,7 @@ export default function ChatScreen() {
   );
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
+    <KeyboardAvoidingView  style={{flex: 1, backgroundColor: isDark ? "#1e1e1e" : "#f8f8f8"}}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       {isSessionActive && (
@@ -275,10 +279,6 @@ export default function ChatScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#1e1e1e",
-  },
   messagesContainer: {
     padding: 16,
     paddingBottom: 80,

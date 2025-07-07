@@ -8,11 +8,15 @@ import {
   Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useContext } from 'react';
+import { ThemeContext } from '../context/ThemeContext';
 
 export default function MyBotScreen({ navigation }) {
   const [name, setName] = useState('');
   const [style, setStyle] = useState('');
   const [hasSetBot, setHasSetBot] = useState(false);
+  const { theme } = useContext(ThemeContext);
+const isDark = theme === 'dark';
 
   useEffect(() => {
     const loadBot = async () => {
@@ -61,7 +65,7 @@ export default function MyBotScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1, backgroundColor: isDark ? '#1e1e1e' : '#ffffff', padding: 20 }}>
       <Text style={styles.title}>🧙‍♀️ Customize Your Tarot Bot</Text>
 
       <Text style={styles.label}>Bot Name:</Text>
@@ -91,11 +95,6 @@ export default function MyBotScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#1e1e1e',
-    padding: 20,
-  },
   title: {
     fontSize: 24,
     color: '#f8e1c1',

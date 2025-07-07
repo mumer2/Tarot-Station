@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useContext  } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import {
   View,
   Text,
@@ -10,26 +10,23 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '../utils/i18n';
-import { LanguageContext } from '../context/LanguageContext';
+import { ThemeContext } from '../context/ThemeContext';
 
-export default function SettingsScreen({ navigation }) {
+export default function SettingsScreen() {
+  const { theme, toggleTheme } = useContext(ThemeContext);
   const [selectedLang, setSelectedLang] = useState(i18n.locale.startsWith('zh') ? 'zh' : 'en');
-  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  const isDarkMode = theme === 'dark';
 
   useEffect(() => {
-    const loadSettings = async () => {
+    const loadLang = async () => {
       const lang = await AsyncStorage.getItem('@lang');
       if (lang) {
         i18n.locale = lang;
         setSelectedLang(lang);
       }
-
-      const theme = await AsyncStorage.getItem('@theme');
-      if (theme === 'light') {
-        setIsDarkMode(false);
-      }
     };
-    loadSettings();
+    loadLang();
   }, []);
 
   const changeLanguage = async (lang) => {
@@ -37,28 +34,21 @@ export default function SettingsScreen({ navigation }) {
       i18n.locale = lang;
       await AsyncStorage.setItem('@lang', lang);
       setSelectedLang(lang);
-      Alert.alert('✅', i18n.t('language') + ' updated. Restart app to apply.');
+      Alert.alert('✅', `${i18n.t('language')} updated. Restart app to apply.`);
     } catch (e) {
       Alert.alert('❌', 'Language change failed.');
     }
   };
 
-  const toggleTheme = async () => {
-    const newTheme = isDarkMode ? 'light' : 'dark';
-    setIsDarkMode(!isDarkMode);
-    await AsyncStorage.setItem('@theme', newTheme);
-    Alert.alert('🎨 Theme changed', `Now using ${newTheme} mode.`);
-  };
-
   const clearChatHistory = async () => {
-    Alert.alert('⚠️ Confirm', 'Delete all chat history?', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert('⚠️ Confirm', i18n.t('confirmClearChat'), [
+      { text: i18n.t('cancel'), style: 'cancel' },
       {
-        text: 'Delete',
+        text: i18n.t('delete'),
         style: 'destructive',
         onPress: async () => {
           await AsyncStorage.removeItem('@chat_sessions');
-          Alert.alert('✅ Deleted', 'All chat sessions cleared.');
+          Alert.alert('✅', i18n.t('chatCleared'));
         },
       },
     ]);
@@ -66,13 +56,15 @@ export default function SettingsScreen({ navigation }) {
 
   const resetWallet = async () => {
     await AsyncStorage.setItem('@wallet_balance', '0');
-    Alert.alert('✅ Wallet Reset', 'Balance set to 0 RMB.');
+    Alert.alert('✅', i18n.t('walletReset'));
   };
 
   const resetBot = async () => {
     await AsyncStorage.removeItem('@tarot_bot');
-    Alert.alert('🧙‍♀️', 'Bot profile reset to default.');
+    Alert.alert('🧙‍♀️', i18n.t('botReset'));
   };
+
+  const styles = getStyles(theme);
 
   return (
     <ScrollView style={styles.container}>
@@ -105,7 +97,7 @@ export default function SettingsScreen({ navigation }) {
         </View>
       </View>
 
-      {/* Actions */}
+      {/* Actions Section */}
       <View style={styles.card}>
         <TouchableOpacity style={styles.itemButton} onPress={resetBot}>
           <Text style={styles.itemText}>♻️ {i18n.t('resetBot')}</Text>
@@ -123,70 +115,75 @@ export default function SettingsScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#1e1e1e',
-    paddingHorizontal: 16,
-  },
-  header: {
-    fontSize: 28,
-    color: '#f8e1c1',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginVertical: 25,
-  },
-  sectionTitle: {
-    color: '#f8e1c1',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 12,
-  },
-  card: {
-    backgroundColor: '#2d2b4e',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  langRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  langButton: {
-    backgroundColor: '#3b3857',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-  },
-  selectedButton: {
-    backgroundColor: '#A26769',
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 15,
-  },
-  settingRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  settingText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  itemButton: {
-    paddingVertical: 14,
-    borderBottomColor: '#444',
-    borderBottomWidth: 1,
-  },
-  itemText: {
-    color: '#f8e1c1',
-    fontSize: 15,
-  },
-});
+// Dynamic styles based on theme
+const getStyles = (theme) => {
+  const isDark = theme === 'dark';
+
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: isDark ? '#1e1e1e' : '#f7f7f7',
+      paddingHorizontal: 16,
+    },
+    header: {
+      fontSize: 28,
+      color: isDark ? '#f8e1c1' : '#222',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginVertical: 25,
+    },
+    sectionTitle: {
+      color: isDark ? '#f8e1c1' : '#333',
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 12,
+    },
+    card: {
+      backgroundColor: isDark ? '#2d2b4e' : '#fff',
+      borderRadius: 16,
+      padding: 16,
+      marginBottom: 20,
+      shadowColor: '#000',
+      shadowOpacity: 0.1,
+      shadowOffset: { width: 0, height: 2 },
+      shadowRadius: 4,
+      elevation: 3,
+    },
+    langRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+    },
+    langButton: {
+      backgroundColor: isDark ? '#3b3857' : '#ddd',
+      paddingVertical: 12,
+      paddingHorizontal: 20,
+      borderRadius: 10,
+    },
+    selectedButton: {
+      backgroundColor: '#A26769',
+    },
+    buttonText: {
+      color: '#fff',
+      fontWeight: 'bold',
+      fontSize: 15,
+    },
+    settingRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    settingText: {
+      color: isDark ? '#fff' : '#000',
+      fontSize: 16,
+    },
+    itemButton: {
+      paddingVertical: 14,
+      borderBottomColor: '#444',
+      borderBottomWidth: 1,
+    },
+    itemText: {
+      color: isDark ? '#f8e1c1' : '#333',
+      fontSize: 15,
+    },
+  });
+};

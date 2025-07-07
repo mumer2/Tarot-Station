@@ -7,9 +7,13 @@ import {
   Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useContext } from 'react';
+import { ThemeContext } from '../context/ThemeContext';
 
 export default function RechargeScreen() {
   const [balance, setBalance] = useState(0);
+  const { theme } = useContext(ThemeContext);
+const isDark = theme === 'dark';
 
   // Load balance from AsyncStorage
   const loadBalance = async () => {
@@ -31,6 +35,39 @@ export default function RechargeScreen() {
     await AsyncStorage.setItem('@wallet_balance', newBalance.toString());
     Alert.alert('✅ Recharge Successful', `Added ${amount} RMB`);
   };
+
+
+  const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: isDark ? '#1e1e1e' : '#ffffff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  title: {
+    fontSize: 26,
+    color: '#f8e1c1',
+    marginBottom: 20,
+  },
+  balanceText: {
+    color: isDark ? '#f8e1c1' : '#2c2c2c',
+    fontSize: 18,
+    marginBottom: 30,
+  },
+  rechargeButton: {
+    backgroundColor: '#f8e1c1',
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 20,
+    marginVertical: 10,
+  },
+  rechargeText: {
+    fontSize: 16,
+    color: '#2c2c4e',
+    fontWeight: 'bold',
+  },
+});
 
   return (
     <View style={styles.container}>
@@ -61,34 +98,3 @@ export default function RechargeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#1e1e1e',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 26,
-    color: '#f8e1c1',
-    marginBottom: 20,
-  },
-  balanceText: {
-    color: '#fff',
-    fontSize: 18,
-    marginBottom: 30,
-  },
-  rechargeButton: {
-    backgroundColor: '#f8e1c1',
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 20,
-    marginVertical: 10,
-  },
-  rechargeText: {
-    fontSize: 16,
-    color: '#2c2c4e',
-    fontWeight: 'bold',
-  },
-});

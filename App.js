@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from './utils/i18n'; // 👈 import your i18n setup
 import { setAppLanguage } from './utils/i18n';
 import { LanguageProvider } from './context/LanguageContext'; // ✅ import
-
+import { ThemeProvider } from './context/ThemeContext';
 // Screens
 import HomeScreen from './screens/HomeScreen';
 import HoroscopeScreen from './screens/HoroscopeScreen';
@@ -42,6 +42,7 @@ export default function App() {
   if (!isReady) return null; // Show splash here if desired
 
   return (
+    <ThemeProvider>
      <LanguageProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Welcome">
@@ -57,5 +58,6 @@ export default function App() {
       </Stack.Navigator>
     </NavigationContainer>
     </LanguageProvider>
+    </ThemeProvider>
   );
 }

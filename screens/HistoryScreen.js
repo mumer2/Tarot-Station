@@ -11,11 +11,15 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { useContext } from 'react';
+import { ThemeContext } from '../context/ThemeContext'; 
 
 export default function HistoryScreen() {
   const [sessions, setSessions] = useState([]);
   const [search, setSearch] = useState('');
   const navigation = useNavigation();
+  const { theme } = useContext(ThemeContext);
+const isDark = theme === 'dark';
 
   // Load sessions from AsyncStorage
   useEffect(() => {
@@ -80,7 +84,7 @@ export default function HistoryScreen() {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1, backgroundColor: isDark ? '#1e1e1e' : '#ffffff', padding: 16 }}>
       <Text style={styles.header}>📜 Chat History</Text>
 
       <View style={styles.searchContainer}>
@@ -108,11 +112,6 @@ export default function HistoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#1e1e1e',
-    padding: 16,
-  },
   header: {
     fontSize: 22,
     fontWeight: 'bold',

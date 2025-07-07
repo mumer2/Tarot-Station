@@ -6,10 +6,14 @@ import {
   StyleSheet,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useContext } from 'react';
+import { ThemeContext } from '../context/ThemeContext';
 
 export default function SessionView({ route }) {
   const { sessionId } = route.params;
   const [messages, setMessages] = useState([]);
+  const { theme } = useContext(ThemeContext);
+const isDark = theme === 'dark';
 
   useEffect(() => {
     const loadSession = async () => {
@@ -38,7 +42,7 @@ export default function SessionView({ route }) {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1, backgroundColor: isDark ? '#1e1e1e' : '#ffffff' }}>
       <FlatList
         data={messages}
         renderItem={renderItem}
@@ -50,10 +54,6 @@ export default function SessionView({ route }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#1e1e1e',
-  },
   messageRow: {
     marginBottom: 10,
   },

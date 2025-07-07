@@ -8,6 +8,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import axios from 'axios';
+import { useContext } from 'react';
+import { ThemeContext } from '../context/ThemeContext';
 
 const signs = [
   { name: 'Aries', emoji: '♈', color: '#FF6B6B' },
@@ -28,6 +30,9 @@ export default function HoroscopeScreen() {
   const [selectedSign, setSelectedSign] = useState('Aries');
   const [horoscope, setHoroscope] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const { theme } = useContext(ThemeContext);
+const isDark = theme === 'dark';
 
   const fetchDaily = async (sign) => {
     setLoading(true);
@@ -54,7 +59,7 @@ export default function HoroscopeScreen() {
   }, [selectedSign]);
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={{flex: 1, backgroundColor: isDark ? "#1e1e1e" : "#f8f8f8",padding: 16}}>
       <Text style={styles.title}>🔮 Daily Horoscope</Text>
 
       <Text style={styles.subtitle}>Select Your Zodiac Sign:</Text>
@@ -87,11 +92,6 @@ export default function HoroscopeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#1e1e1e',
-    padding: 16,
-  },
   title: {
     fontSize: 26,
     color: '#f8e1c1',
