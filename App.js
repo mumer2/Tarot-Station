@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from './utils/i18n'; // 👈 import your i18n setup
 import { setAppLanguage } from './utils/i18n';
+import { LanguageProvider } from './context/LanguageContext'; // ✅ import
 
 // Screens
 import HomeScreen from './screens/HomeScreen';
@@ -41,6 +42,7 @@ export default function App() {
   if (!isReady) return null; // Show splash here if desired
 
   return (
+     <LanguageProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Welcome">
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
@@ -54,5 +56,6 @@ export default function App() {
         <Stack.Screen name="SessionView" component={SessionView} options={{ title: 'Chat History View' }} />
       </Stack.Navigator>
     </NavigationContainer>
+    </LanguageProvider>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext  } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '../utils/i18n';
+import { LanguageContext } from '../context/LanguageContext';
 
 export default function SettingsScreen({ navigation }) {
   const [selectedLang, setSelectedLang] = useState(i18n.locale.startsWith('zh') ? 'zh' : 'en');

@@ -15,6 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+import i18n from '../utils/i18n';
 
 export default function ChatScreen() {
   const [messages, setMessages] = useState([]);
@@ -240,7 +241,7 @@ export default function ChatScreen() {
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Ask your Tarot question..."
+          placeholder={i18n.t('ask_placeholder')}
           placeholderTextColor="#aaa"
           value={inputText}
           onChangeText={setInputText}
