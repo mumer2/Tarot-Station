@@ -16,6 +16,8 @@ import MyBotScreen from './screens/MyBotScreen';
 import RechargeScreen from './screens/RechargeScreen';
 import HistoryScreen from './screens/HistoryScreen';
 import SessionView from './screens/SessionView';
+import PrivacyPolicyScreen from './screens/PrivacyPolicyScreen';
+import TermsScreen from './screens/TermsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -55,6 +57,8 @@ export default function App() {
         <Stack.Screen name="Recharge" component={RechargeScreen} options={{ title: 'Recharge' }} />
         <Stack.Screen name="History" component={HistoryScreen} options={{ title: 'Chat History' }} />
         <Stack.Screen name="SessionView" component={SessionView} options={{ title: 'Chat History View' }} />
+        <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} options={{ title: 'Privacy Policy' }} />
+        <Stack.Screen name="Terms" component={TermsScreen} options={{ title: 'Terms of Service' }} />
       </Stack.Navigator>
     </NavigationContainer>
     </LanguageProvider>

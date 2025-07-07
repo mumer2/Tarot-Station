@@ -11,11 +11,12 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '../utils/i18n';
 import { ThemeContext } from '../context/ThemeContext';
+import { useNavigation } from '@react-navigation/native';
 
 export default function SettingsScreen() {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [selectedLang, setSelectedLang] = useState(i18n.locale.startsWith('zh') ? 'zh' : 'en');
-
+const navigation = useNavigation();
   const isDarkMode = theme === 'dark';
 
   useEffect(() => {
@@ -111,6 +112,17 @@ export default function SettingsScreen() {
           <Text style={styles.itemText}>💰 {i18n.t('resetWallet')}</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Legal Links */}
+<View style={styles.card}>
+  <TouchableOpacity style={styles.itemButton} onPress={() => navigation.navigate('PrivacyPolicy')}>
+    <Text style={styles.itemText}>🔐 Privacy Policy</Text>
+  </TouchableOpacity>
+
+  <TouchableOpacity style={styles.itemButton} onPress={() => navigation.navigate('Terms')}>
+    <Text style={styles.itemText}>📄 Terms of Service</Text>
+  </TouchableOpacity>
+</View>
     </ScrollView>
   );
 }
