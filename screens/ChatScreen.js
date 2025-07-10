@@ -171,7 +171,7 @@ const isDark = theme === 'dark';
       const balance = val ? parseInt(val) : 0;
 
       if (balance >= 1) {
-        const newBalance = balance - 1;
+        const newBalance = balance - 5;
         await AsyncStorage.setItem("@wallet_balance", newBalance.toString());
         setWalletBalance(newBalance);
 
@@ -184,7 +184,7 @@ const isDark = theme === 'dark';
         }, 1000);
         setTimer(newTimer);
 
-        Alert.alert("✅ 1 RMB Used", "1 more minute added.");
+        Alert.alert("✅ 5 RMB Used", "1 more minute added.");
       } else {
         Alert.alert("💰 Not Enough Balance", "Please recharge to continue.");
       }

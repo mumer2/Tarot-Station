@@ -31,31 +31,41 @@ const isDark = theme === 'dark';
     loadBot();
   }, []);
 
-  const saveBot = async () => {
-    if (!name.trim() || !style.trim()) {
-      Alert.alert('Missing Info', 'Please fill both name and style.');
+ const saveBot = async () => {
+  if (!name.trim() || !style.trim()) {
+    Alert.alert('Missing Info', 'Please fill both name and style.');
+    return;
+  }
+
+  if (hasSetBot) {
+    // Only allow if user has enough balance
+    const balance = parseFloat(await AsyncStorage.getItem('@wallet_balance')) || 0;
+
+    if (balance < 5) {
+      Alert.alert('Insufficient Balance', 'You need at least 5 RMB in your wallet to update the bot.');
       return;
     }
 
-    if (hasSetBot) {
-      Alert.alert(
-        'Change Personality',
-        'You can only set this once for free. Do you want to pay to change it?',
-        [
-          { text: 'Cancel', style: 'cancel' },
-          {
-            text: 'Pay 1 RMB',
-            onPress: () => {
-              // Here you'd add real payment logic
-              doSave();
-            },
+    Alert.alert(
+      'Change Personality',
+      'You can only set this once for free. Pay 5 RMB to change it?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Pay 5 RMB',
+          onPress: async () => {
+            const newBalance = balance - 5;
+            await AsyncStorage.setItem('@wallet_balance', String(newBalance));
+            doSave(); // Save the new bot
           },
-        ]
-      );
-    } else {
-      doSave();
-    }
-  };
+        },
+      ]
+    );
+  } else {
+    doSave(); // Free first time
+  }
+};
+
 
   const doSave = async () => {
     const data = { name, style };

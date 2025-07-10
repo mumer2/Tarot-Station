@@ -39,13 +39,19 @@ export default function LoginScreen() {
         { email, password }
       );
 
-      const token = response.data.token;
+      const { token, user } = response.data;
 
-      // ✅ Save login state and first login flag
+      // ✅ Save user details
+      await AsyncStorage.setItem('@auth_token', token);
+      await AsyncStorage.setItem('@user_id', user._id); // important for wallet and history
+      await AsyncStorage.setItem('@user_email', user.email);
+      await AsyncStorage.setItem('@user_name', user.name);
+      await AsyncStorage.setItem('@wallet_balance', String(user.balance || 0));
       await AsyncStorage.setItem('@first_login', 'true');
 
-      await login(token); // Save token to context + AsyncStorage
-      navigation.replace('Welcome'); // Show Welcome screen on first login
+      await login(token); // context-aware login
+
+      navigation.replace('Welcome'); // Redirect after login
     } catch (error) {
       Alert.alert(
         '❌ Login Failed',

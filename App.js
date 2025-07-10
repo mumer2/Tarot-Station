@@ -6,6 +6,7 @@ import i18n from './utils/i18n';
 import { LanguageProvider } from './context/LanguageContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider, AuthContext } from './context/AuthContext';
+import { StripeProvider } from '@stripe/stripe-react-native';
 
 // Screens
 import HomeScreen from './screens/HomeScreen';
@@ -24,6 +25,7 @@ import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
 import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
 import ResetPasswordScreen from './screens/ResetPasswordScreen';
+import WalletHistoryScreen from './screens/WalletHistoryScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -73,6 +75,8 @@ function AppNavigator() {
         <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: 'Settings' }} />
         <Stack.Screen name="MyBot" component={MyBotScreen} options={{ title: 'My Bot' }} />
         <Stack.Screen name="Recharge" component={RechargeScreen} options={{ title: 'Recharge' }} />
+        <Stack.Screen name="WalletHistory" component={WalletHistoryScreen} options={{ title: 'Wallet Hostory' }} />
+
         <Stack.Screen name="History" component={HistoryScreen} options={{ title: 'Chat History' }} />
         <Stack.Screen name="SessionView" component={SessionView} options={{ title: 'Chat History View' }} />
         <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} options={{ title: 'Privacy Policy' }} />
@@ -87,6 +91,7 @@ function AppNavigator() {
 
 export default function App() {
   return (
+    <StripeProvider publishableKey="pk_test_51RZ5xeD1MsDkTkjjPUM3jGl7wZMhXlkiF4iGc5Jdey3SvcpmtmT2TcucP00QLjHd97wCI38RM35noeM1UO3GPqTa00YrvE9E0e">
     <ThemeProvider>
       <LanguageProvider>
         <AuthProvider>
@@ -94,5 +99,6 @@ export default function App() {
         </AuthProvider>
       </LanguageProvider>
     </ThemeProvider>
+    </StripeProvider>
   );
 }
