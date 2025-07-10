@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -11,12 +11,15 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '../utils/i18n';
 import { ThemeContext } from '../context/ThemeContext';
+import { AuthContext } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 
 export default function SettingsScreen() {
   const { theme, toggleTheme } = useContext(ThemeContext);
+  const { logout } = useContext(AuthContext);
+  const navigation = useNavigation();
+
   const [selectedLang, setSelectedLang] = useState(i18n.locale.startsWith('zh') ? 'zh' : 'en');
-const navigation = useNavigation();
   const isDarkMode = theme === 'dark';
 
   useEffect(() => {
@@ -65,13 +68,45 @@ const navigation = useNavigation();
     Alert.alert('🧙‍♀️', i18n.t('botReset'));
   };
 
+ const handleLogout = () => {
+  Alert.alert(
+    '⚠️ Confirm Logout',
+    'Are you sure you want to logout?',
+    [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Logout',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await logout(); // Clear AsyncStorage + context
+
+            // Wait a short moment to ensure context is updated
+            setTimeout(() => {
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+              });
+            }, 100); // 👈 Delay helps ensure context update is processed
+          } catch (err) {
+            console.error('Logout error:', err);
+            Alert.alert('❌ Logout Failed', 'Please try again.');
+          }
+        },
+      },
+    ]
+  );
+};
+
+
+
   const styles = getStyles(theme);
 
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.header}>{i18n.t('settings')}</Text>
 
-      {/* Language Section */}
+      {/* Language */}
       <View style={styles.card}>
         <Text style={styles.sectionTitle}>🌐 {i18n.t('language')}</Text>
         <View style={styles.langRow}>
@@ -90,7 +125,7 @@ const navigation = useNavigation();
         </View>
       </View>
 
-      {/* Theme Section */}
+      {/* Theme Toggle */}
       <View style={styles.card}>
         <View style={styles.settingRow}>
           <Text style={styles.settingText}>🌓 {i18n.t('darkTheme')}</Text>
@@ -98,7 +133,7 @@ const navigation = useNavigation();
         </View>
       </View>
 
-      {/* Actions Section */}
+      {/* Actions */}
       <View style={styles.card}>
         <TouchableOpacity style={styles.itemButton} onPress={resetBot}>
           <Text style={styles.itemText}>♻️ {i18n.t('resetBot')}</Text>
@@ -114,20 +149,26 @@ const navigation = useNavigation();
       </View>
 
       {/* Legal Links */}
-<View style={styles.card}>
-  <TouchableOpacity style={styles.itemButton} onPress={() => navigation.navigate('PrivacyPolicy')}>
-    <Text style={styles.itemText}>🔐 Privacy Policy</Text>
-  </TouchableOpacity>
+      <View style={styles.card}>
+        <TouchableOpacity style={styles.itemButton} onPress={() => navigation.navigate('PrivacyPolicy')}>
+          <Text style={styles.itemText}>🔐 Privacy Policy</Text>
+        </TouchableOpacity>
 
-  <TouchableOpacity style={styles.itemButton} onPress={() => navigation.navigate('Terms')}>
-    <Text style={styles.itemText}>📄 Terms of Service</Text>
-  </TouchableOpacity>
-</View>
+        <TouchableOpacity style={styles.itemButton} onPress={() => navigation.navigate('Terms')}>
+          <Text style={styles.itemText}>📄 Terms of Service</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Logout */}
+      <View style={styles.card}>
+        <TouchableOpacity style={styles.itemButton} onPress={handleLogout}>
+          <Text style={[styles.itemText, { color: 'red' }]}>🚪 Logout</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 }
 
-// Dynamic styles based on theme
 const getStyles = (theme) => {
   const isDark = theme === 'dark';
 

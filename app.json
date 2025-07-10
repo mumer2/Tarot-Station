@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Tarot Station",
-    "slug": "Tarot Station",
+    "slug": "tarot-station",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/Logo.png",
@@ -20,13 +20,19 @@
         "foregroundImage": "./assets/Logo.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.m_umer_m.tarotstation"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-localization"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "b6850da6-a807-47b0-824f-127823963426"
+      }
+    }
   }
 }

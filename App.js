@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import i18n from './utils/i18n'; // 👈 import your i18n setup
-import { setAppLanguage } from './utils/i18n';
-import { LanguageProvider } from './context/LanguageContext'; // ✅ import
+import i18n from './utils/i18n';
+import { LanguageProvider } from './context/LanguageContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { AuthProvider, AuthContext } from './context/AuthContext';
+
 // Screens
 import HomeScreen from './screens/HomeScreen';
 import HoroscopeScreen from './screens/HoroscopeScreen';
@@ -18,37 +19,54 @@ import HistoryScreen from './screens/HistoryScreen';
 import SessionView from './screens/SessionView';
 import PrivacyPolicyScreen from './screens/PrivacyPolicyScreen';
 import TermsScreen from './screens/TermsScreen';
+import AlipayScreen from './screens/AlipayQRScreen';
+import LoginScreen from './screens/LoginScreen';
+import SignupScreen from './screens/SignupScreen';
+import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
+import ResetPasswordScreen from './screens/ResetPasswordScreen';
 
 const Stack = createNativeStackNavigator();
 
-export default function App() {
+function AppNavigator() {
+  const { authToken } = useContext(AuthContext);
   const [isReady, setIsReady] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
-    const initLanguage = async () => {
+    const initApp = async () => {
       try {
         const lang = await AsyncStorage.getItem('@lang');
-        if (lang) {
-          i18n.locale = lang;
-        }
+        if (lang) i18n.locale = lang;
+
+        const firstLogin = await AsyncStorage.getItem('@first_login');
+        setShowWelcome(firstLogin === 'true');
       } catch (e) {
-        console.warn('Failed to load language:', e);
+        console.warn('Initialization error:', e);
       } finally {
-        setIsReady(true); // ✅ Now render screens
+        setIsReady(true);
       }
     };
-
-    initLanguage();
+    initApp();
   }, []);
 
-  if (!isReady) return null; // Show splash here if desired
+  if (!isReady) return null;
 
   return (
-    <ThemeProvider>
-     <LanguageProvider>
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Welcome">
+      <Stack.Navigator initialRouteName={!authToken ? 'Login' : showWelcome ? 'Welcome' : 'Home'}>
+        {/* Auth Screens */}
+        {!authToken && (
+          <>
+            <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Signup" component={SignupScreen} options={{ title: 'Sign Up' }} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: 'Reset Password' }} />
+          </>
+        )}
+
+        {/* First-time Welcome Screen */}
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
+
+        {/* Main App Screens */}
         <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Tarot Station' }} />
         <Stack.Screen name="Horoscope" component={HoroscopeScreen} options={{ title: 'Horoscope' }} />
         <Stack.Screen name="Chat" component={ChatScreen} options={{ title: 'Tarot Chat' }} />
@@ -59,9 +77,22 @@ export default function App() {
         <Stack.Screen name="SessionView" component={SessionView} options={{ title: 'Chat History View' }} />
         <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} options={{ title: 'Privacy Policy' }} />
         <Stack.Screen name="Terms" component={TermsScreen} options={{ title: 'Terms of Service' }} />
+        <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} options={{ title: 'Reset Password' }} />
+
+        <Stack.Screen name="Alipay" component={AlipayScreen} />
       </Stack.Navigator>
     </NavigationContainer>
-    </LanguageProvider>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <AppNavigator />
+        </AuthProvider>
+      </LanguageProvider>
     </ThemeProvider>
   );
 }
