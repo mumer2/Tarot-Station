@@ -18,6 +18,9 @@ i18n.translations = {
     chatDeleted: 'All chat sessions cleared.',
     walletReset: 'Wallet set to 0 RMB',
     botReset: 'Bot reset to default',
+    privacyPolicy: 'Privacy Policy',
+    termOfService: 'Terms of Service',
+    logout: 'Logout',
     ask_placeholder: "Ask your Tarot question...",
     time_left: "s left in this session",
     bot_thinking: "Tarot Bot is thinking...",
@@ -35,6 +38,8 @@ i18n.translations = {
     success_recharge_msg: "1 more minute added.",
     low_balance: "💰 Not Enough Balance",
     recharge_needed: "Please recharge to continue.",
+    walletRecharge:'Wallet Recharge',
+    customizeYourTarotChat:'Customize Your Tarot Bot',
   },
   zh: {
       settings: '设置',
@@ -50,6 +55,9 @@ i18n.translations = {
     chatDeleted: '所有聊天会话已删除。',
     walletReset: '钱包已重置为0元',
     botReset: '机器人已重置为默认',
+    privacyPolicy: '隐私政策',
+    termOfService: '服务条款',
+    logout: '退出',
     ask_placeholder: "请输入您的塔罗问题…",
     time_left: "秒剩余",
     bot_thinking: "塔罗机器人正在思考...",
@@ -67,6 +75,8 @@ i18n.translations = {
     success_recharge_msg: "已添加 1 分钟时间。",
     low_balance: "💰 余额不足",
     recharge_needed: "请充值以继续。",
+    walletRecharge:'钱包充值',
+    customizeYourTarotChat:'定制你的塔罗牌机器人',
   },
 };
 

@@ -10,6 +10,8 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useContext } from 'react';
 import { ThemeContext } from '../context/ThemeContext';
+import i18n from '../utils/i18n';
+
 
 export default function MyBotScreen({ navigation }) {
   const [name, setName] = useState('');
@@ -76,7 +78,7 @@ const isDark = theme === 'dark';
 
   return (
     <View style={{ flex: 1, backgroundColor: isDark ? '#1e1e1e' : '#ffffff', padding: 20 }}>
-      <Text style={styles.title}>🧙‍♀️ Customize Your Tarot Bot</Text>
+      <Text style={styles.title}>🧙‍♀️ {i18n.t('customizeYourTarotChat')}</Text>
 
       <Text style={styles.label}>Bot Name:</Text>
       <TextInput

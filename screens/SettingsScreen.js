@@ -151,18 +151,18 @@ export default function SettingsScreen() {
       {/* Legal Links */}
       <View style={styles.card}>
         <TouchableOpacity style={styles.itemButton} onPress={() => navigation.navigate('PrivacyPolicy')}>
-          <Text style={styles.itemText}>🔐 Privacy Policy</Text>
+          <Text style={styles.itemText}>🔐 {i18n.t('privacyPolicy')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.itemButton} onPress={() => navigation.navigate('Terms')}>
-          <Text style={styles.itemText}>📄 Terms of Service</Text>
+          <Text style={styles.itemText}>📄 {i18n.t('termOfService')}</Text>
         </TouchableOpacity>
       </View>
 
       {/* Logout */}
       <View style={styles.card}>
         <TouchableOpacity style={styles.itemButton} onPress={handleLogout}>
-          <Text style={[styles.itemText, { color: 'red' }]}>🚪 Logout</Text>
+          <Text style={[styles.itemText, { color: 'red' }]}>🚪 {i18n.t('logout')}</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

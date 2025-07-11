@@ -15,6 +15,8 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { CardField, useStripe, useConfirmPayment } from '@stripe/stripe-react-native';
 import axios from 'axios';
+import i18n from '../utils/i18n';
+
 
 export default function RechargeScreen() {
   const [balance, setBalance] = useState(0);
@@ -112,7 +114,7 @@ export default function RechargeScreen() {
         style={styles(isDark).icon}
       />
 
-      <Text style={styles(isDark).title}>💰 Wallet Recharge</Text>
+      <Text style={styles(isDark).title}>💰 {i18n.t('walletRecharge')}</Text>
       <Text style={styles(isDark).label}>Current Balance</Text>
       <Text style={styles(isDark).balance}>{balance} RMB</Text>
 
