@@ -8,7 +8,6 @@ import {
   Alert,
   ActivityIndicator,
   TextInput,
-  Modal,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemeContext } from '../context/ThemeContext';
@@ -16,15 +15,14 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { CardField, useStripe, useConfirmPayment } from '@stripe/stripe-react-native';
 import axios from 'axios';
-import { WebView } from 'react-native-webview';
 import i18n from '../utils/i18n';
+
 
 export default function RechargeScreen() {
   const [balance, setBalance] = useState(0);
   const [amountToRecharge, setAmountToRecharge] = useState(null);
   const [manualAmount, setManualAmount] = useState('');
   const [loading, setLoading] = useState(false);
-  const [wechatUrl, setWeChatUrl] = useState(null);
   const { theme } = useContext(ThemeContext);
   const isDark = theme === 'dark';
   const { confirmPayment } = useStripe();
@@ -107,35 +105,6 @@ export default function RechargeScreen() {
     }
   };
 
-  const handleWeChatPay = async (amount) => {
-    if (!amount || isNaN(amount) || amount < 1) {
-      return Alert.alert('⚠️ Invalid amount', 'Please enter an amount ≥ 1 RMB.');
-    }
-
-    try {
-      setLoading(true);
-      const res = await fetch('https://backend-calorieai-app.netlify.app/.netlify/functions/wechat-pay', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ total_fee: amount * 100 }),
-      });
-
-      const data = await res.json();
-      console.log('🟢 WeChat Pay response:', data);
-
-      if (data.mweb_url) {
-        setWeChatUrl(data.mweb_url);
-      } else {
-        Alert.alert('WeChat Error', data.error || 'No mweb_url returned');
-      }
-    } catch (e) {
-      console.error('WeChat Pay error:', e);
-      Alert.alert('WeChat Error', e.message || 'Unexpected error');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <ScrollView contentContainerStyle={styles(isDark).container}>
       <Ionicons
@@ -182,7 +151,6 @@ export default function RechargeScreen() {
         value={manualAmount}
         onChangeText={setManualAmount}
       />
-
       <TouchableOpacity
         style={[styles(isDark).button, { marginTop: 10 }]}
         onPress={() => handleRecharge(Number(manualAmount))}
@@ -196,44 +164,21 @@ export default function RechargeScreen() {
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[styles(isDark).button, { backgroundColor: '#7bb32e' }]}
-        onPress={() => handleWeChatPay(Number(manualAmount || 0))}
-        disabled={loading}
-      >
-        <Text style={[styles(isDark).buttonText, { color: '#fff' }]}>WeChat Pay {manualAmount || '...'} RMB</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
         style={[styles(isDark).button, { backgroundColor: '#2c2c4e', marginTop: 20 }]}
         onPress={() => navigation.navigate('WalletHistory')}
       >
-        <Text style={[styles(isDark).buttonText, { color: '#f8e1c1', fontSize: 14 }]}>📜 View Recharge History</Text>
+        <Text style={[styles(isDark).buttonText, { color: '#f8e1c1',fontSize:14 }]}>
+          📜 View Recharge History
+        </Text>
       </TouchableOpacity>
 
-      {loading && <ActivityIndicator size="large" color="#f8e1c1" style={{ marginTop: 20 }} />}
+      {loading && (
+        <ActivityIndicator size="large" color="#f8e1c1" style={{ marginTop: 20 }} />
+      )}
 
-      <Text style={styles(isDark).note}>💡 5 RMB = 1 minute of chat time with the Tarot AI.</Text>
-
-      <Modal visible={!!wechatUrl} animationType="slide">
-        <View style={{ flex: 1 }}>
-          <TouchableOpacity
-            onPress={() => setWeChatUrl(null)}
-            style={{ padding: 10, backgroundColor: '#eee', alignItems: 'center' }}
-          >
-            <Text>Close Payment</Text>
-          </TouchableOpacity>
-          <WebView
-            source={{ uri: wechatUrl }}
-            style={{ flex: 1 }}
-            onNavigationStateChange={(navState) => {
-              if (navState.url.includes('payment-success')) {
-                Alert.alert('✅ WeChat Payment Completed');
-                setWeChatUrl(null);
-              }
-            }}
-          />
-        </View>
-      </Modal>
+      <Text style={styles(isDark).note}>
+        💡 5 RMB = 1 minute of chat time with the Tarot AI.
+      </Text>
     </ScrollView>
   );
 }
